@@ -7,18 +7,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        'space-dark': '#050914',
-        'space-secondary': '#091321',
-        'space-card': '#101D30',
-        'space-card-hover': '#16273f',
+        'space-dark': 'var(--space-dark)',
+        'space-secondary': 'var(--space-secondary)',
+        'space-card': 'var(--space-card)',
+        'space-card-hover': 'var(--space-card-hover)',
         'space-accent': '#54C8FF',
         'space-purple': '#9D8AFF',
         'space-success': '#42D69B',
         'space-warning': '#FFBF69',
-        'space-text': '#F4F7FF',
-        'space-muted': '#A5B4C8',
-        'space-border': '#1A2E4C',
-        'space-border-bright': '#294975',
+        'space-text': 'var(--space-text)',
+        'space-muted': 'var(--space-muted)',
+        'space-border': 'var(--space-border)',
+        'space-border-bright': 'var(--space-border-bright)',
       },
       fontFamily: {
         heading: ['"Space Grotesk"', 'sans-serif'],
@@ -39,4 +39,3 @@ export default {
   },
   plugins: [],
 }
-

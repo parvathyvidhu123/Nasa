@@ -12,14 +12,36 @@ import {
   Radio, 
   Globe2,
   ChevronRight,
-  Compass
+  Compass,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [utcTime, setUtcTime] = useState('');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('stc_theme');
+      if (saved === 'light') return 'light';
+    }
+    return 'dark'; // DEFAULT IS STRICTLY DARK MODE
+  });
   const location = useLocation();
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light-mode');
+    } else {
+      document.documentElement.classList.remove('light-mode');
+    }
+    localStorage.setItem('stc_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -120,13 +142,33 @@ export const Navbar: React.FC = () => {
               })}
             </nav>
 
-            {/* Right: Live Telemetry & Mobile Hamburger */}
-            <div className="flex items-center gap-2.5 flex-shrink-0">
+            {/* Right: Live Telemetry, Theme Toggle & Mobile Hamburger */}
+            <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
               {/* Telemetry Clock */}
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-space-card/80 border border-space-border text-xs font-mono text-space-muted">
                 <Radio className="w-3.5 h-3.5 text-space-success animate-pulse" />
                 <span className="text-space-text font-medium tracking-wider">{utcTime || 'UTC SYNC'}</span>
               </div>
+
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-space-card/80 border border-space-border hover:border-space-accent/50 text-space-muted hover:text-space-text transition-all duration-200 text-xs font-mono group"
+                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                aria-label="Toggle Light or Dark Mode"
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="w-4 h-4 text-space-warning group-hover:rotate-45 transition-transform duration-300" />
+                    <span className="hidden md:inline text-[11px] font-medium text-space-text">Light</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-4 h-4 text-space-accent group-hover:-rotate-12 transition-transform duration-300" />
+                    <span className="hidden md:inline text-[11px] font-medium text-space-text">Dark</span>
+                  </>
+                )}
+              </button>
 
               {/* Mobile Menu Hamburger */}
               <button
@@ -146,7 +188,7 @@ export const Navbar: React.FC = () => {
         <div className="lg:hidden fixed inset-0 z-40 bg-space-dark/95 backdrop-blur-2xl pt-20 pb-8 px-5 overflow-y-auto border-b border-space-border">
           <div className="flex flex-col gap-2 max-w-md mx-auto">
             {/* Live Telemetry Pill */}
-            <div className="p-3 rounded-xl bg-space-card border border-space-border mb-3">
+            <div className="p-3 rounded-xl bg-space-card border border-space-border mb-1.5">
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="flex items-center gap-2 text-space-success">
                   <Radio className="w-3.5 h-3.5 animate-pulse" />
@@ -155,6 +197,24 @@ export const Navbar: React.FC = () => {
                 <span className="text-space-text font-bold">{utcTime}</span>
               </div>
             </div>
+
+            {/* Mobile Theme Switcher */}
+            <button
+              onClick={toggleTheme}
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-space-card border border-space-border text-xs font-mono text-space-text hover:border-space-accent/40 transition-colors mb-3"
+            >
+              <span className="flex items-center gap-2 font-medium">
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-space-warning" />
+                ) : (
+                  <Moon className="w-4 h-4 text-space-accent" />
+                )}
+                <span>Color Theme</span>
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-space-secondary text-space-accent border border-space-border font-semibold uppercase">
+                {theme === 'dark' ? 'Dark (Default)' : 'Light Mode'}
+              </span>
+            </button>
 
             <p className="text-[10px] font-mono text-space-muted uppercase tracking-widest px-2 mb-1">
               Mission Navigation
